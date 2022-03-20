@@ -31,9 +31,9 @@ class UserPreferences {
         String? refreshToken = prefs.getString(PrefKeys.RefreshToken);
 
         return User(
-            username:  username.toString(),
-            accessToken: accessToken.toString(),
-            refreshToken:  refreshToken.toString(),
+            username:  username == null ? "" : username.toString(),
+            accessToken: accessToken == null ? "" : accessToken.toString(),
+            refreshToken:  refreshToken == null ? "" : refreshToken.toString(),
         );
     }
 
