@@ -44,14 +44,14 @@ class MyApp extends StatelessWidget {
                                     return LoginPage();
                                 } else {
                                     Provider.of<UserProvider>(context).setUser(u);
-                                    return DashBoard();
+                                    return const UserDrinks();
                                 }
                         }
                     },
                 ),
                 routes: {
                     Routes.Login: (context) => LoginPage(),
-                    Routes.Dashboard: (context) => DashBoard(),
+                    Routes.Dashboard: (context) => const UserDrinks(),
                 },
             ),
         );
