@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mixer_remote/drink.dart';
 import 'package:mixer_remote/views/hamburger.dart';
+import 'package:mixer_remote/constants.dart';
 
 class DrinkListView {
     List<Drink> drinks;
@@ -27,6 +28,12 @@ class DrinkListView {
                         onTap: onDrinkTap,
                     ).build(context);
                 },
+            ),
+            floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                    Navigator.of(context).pushNamed(Routes.AddEdit);
+                },
+                child: const Icon(Icons.add),
             ),
         );
     }

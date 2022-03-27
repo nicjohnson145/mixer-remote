@@ -31,14 +31,12 @@ class DrinkDetails {
             ),
             body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Expanded(
-                    child: Scrollbar(
-                        child: ListView.builder(
-                            itemCount: mainBody.length,
-                            itemBuilder: (BuildContext context, int index) {
-                                return mainBody[index];
-                            },
-                        ),
+                child: Scrollbar(
+                    child: ListView.builder(
+                        itemCount: mainBody.length,
+                        itemBuilder: (BuildContext context, int index) {
+                            return mainBody[index];
+                        },
                     ),
                 ),
             ),

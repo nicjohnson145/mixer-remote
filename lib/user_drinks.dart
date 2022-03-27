@@ -48,7 +48,7 @@ class  _UserDrinksState extends State<UserDrinks> {
                             onDrinkTap: (drink) {
                                 Navigator.of(context).pushNamed(
                                     Routes.DrinkDetails,
-                                    arguments: SingleDrinkArg(id: drink.id),
+                                    arguments: SingleDrinkArg(id: drink.id!),
                                 );
                             },
                         ).build(context);

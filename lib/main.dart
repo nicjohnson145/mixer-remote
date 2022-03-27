@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mixer_remote/login.dart';
 import 'package:mixer_remote/user.dart';
 import 'package:mixer_remote/common.dart';
+import 'package:mixer_remote/add_edit.dart';
 import 'package:mixer_remote/user_preferences.dart';
+import 'package:mixer_remote/api_service.dart';
 import 'package:mixer_remote/single_drink.dart';
 import 'package:mixer_remote/auth.dart';
 import 'package:mixer_remote/constants.dart';
@@ -37,13 +39,34 @@ class MyApp extends StatelessWidget {
                                     return Text('Error: ${snapshot.error}');
                                 }
 
-                                final u = snapshot.data as User;
-                                if (u.username == "") {
+                                var returnLogin = () {
+                                    UserPreferences().removeUser();
                                     return LoginPage();
-                                } else {
-                                    Provider.of<UserProvider>(context).setUser(u);
-                                    return const UserDrinks();
+                                };
+
+                                // Try to get the user
+                                final u = snapshot.data as User;
+                                // If we don't find anything, then straight to login page
+                                if (u.username == "") {
+                                    return returnLogin();
                                 }
+                                // We did find something, try to refresh its credentials
+                                try{
+                                    var a = ApiService(accessToken: u.accessToken, refreshToken: u.refreshToken);
+                                    a.reauthenticate();
+                                    // If we're successful, write the new credentials back to disk
+                                    u.accessToken = a.accessToken;
+                                    u.refreshToken = a.refreshToken;
+                                    UserPreferences().saveUser(u);
+                                } catch(e) {
+                                    // Something went wrong, back to login page and try again
+                                    return returnLogin();
+                                }
+
+                                // We've either got valid credentials, or we've successfully
+                                // refreshed, to the drinks now.
+                                Provider.of<UserProvider>(context).setUser(u);
+                                return const UserDrinks();
                             default:
                                 return loadingSpinner(context);
                         }
@@ -53,6 +76,7 @@ class MyApp extends StatelessWidget {
                     Routes.Login: (context) => LoginPage(),
                     Routes.Dashboard: (context) => const UserDrinks(),
                     Routes.DrinkDetails: (context) => const SingleDrink(),
+                    Routes.AddEdit: (context) => AddEditDrink(),
                 },
             ),
         );
