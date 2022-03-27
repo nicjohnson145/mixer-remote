@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mixer_remote/login.dart';
 import 'package:mixer_remote/user.dart';
+import 'package:mixer_remote/common.dart';
 import 'package:mixer_remote/user_preferences.dart';
+import 'package:mixer_remote/single_drink.dart';
 import 'package:mixer_remote/auth.dart';
 import 'package:mixer_remote/constants.dart';
-import 'package:mixer_remote/dashboard.dart';
+import 'package:mixer_remote/user_drinks.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -30,11 +32,7 @@ class MyApp extends StatelessWidget {
                     future: getUserData(),
                     builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                            case ConnectionState.waiting:
-                            case ConnectionState.active:
-                                return const CircularProgressIndicator();
-                            default:
+                            case ConnectionState.done:
                                 if (snapshot.hasError) {
                                     return Text('Error: ${snapshot.error}');
                                 }
@@ -46,12 +44,15 @@ class MyApp extends StatelessWidget {
                                     Provider.of<UserProvider>(context).setUser(u);
                                     return const UserDrinks();
                                 }
+                            default:
+                                return loadingSpinner(context);
                         }
                     },
                 ),
                 routes: {
                     Routes.Login: (context) => LoginPage(),
                     Routes.Dashboard: (context) => const UserDrinks(),
+                    Routes.DrinkDetails: (context) => const SingleDrink(),
                 },
             ),
         );

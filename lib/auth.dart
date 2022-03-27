@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mixer_remote/constants.dart';
 import 'package:mixer_remote/user.dart';
 import 'package:mixer_remote/user_preferences.dart';
+import 'package:mixer_remote/api_service.dart';
 
 enum Status {
     NotLoggedIn,
@@ -28,6 +29,7 @@ class AuthProvider with ChangeNotifier {
         http.Response resp = await http.post(
             Uri.parse(Urls.Login),
             body: json.encode(loginData),
+            headers: ApiService.basicHeaders(),
         );
 
         if (resp.statusCode != 200) {
