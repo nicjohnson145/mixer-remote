@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mixer_remote/drink.dart';
 import 'package:mixer_remote/views/hamburger.dart';
+import 'package:mixer_remote/auth.dart';
+import 'package:mixer_remote/api_service.dart';
+import 'package:provider/provider.dart';
 
 class DrinkDetails {
     final Drink drink;
@@ -26,6 +29,7 @@ class DrinkDetails {
             appBar: AppBar(
                 title: Text(drink.name),
                 actions: const [
+                    DeleteDrinkButton(),
                     Hamburger(),
                 ],
             ),
@@ -107,6 +111,57 @@ class _IngredientCard extends StatelessWidget {
                         child: Text(ingredient),
                     ),
                 ],
+            ),
+        );
+    }
+}
+
+class DeleteDrinkButton extends StatelessWidget {
+
+    const DeleteDrinkButton({Key? key}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+        return IconButton(
+            icon: const Icon(Icons.delete_forever),
+            onPressed: () {
+                confirmDelete(context);
+            }
+        );
+    }
+
+    Future<void> confirmDelete(BuildContext context) async {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => AlertDialog(
+                title: const Text("Confirm"),
+                content: const Text("Are you sure you want to delete? This action cannot be undone"),
+                actions: <Widget>[
+                    TextButton(
+                        child: const Text('No'),
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                        },
+                    ),
+                    TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () {
+                            print("woo");
+                            //var u = Provider.of<UserProvider>(context).user!;
+                            //var api = ApiService(accessToken: u.accessToken, refreshToken: u.refreshToken);
+
+                            //StoreProvider.of<AppState>(context)
+                            //    .dispatch(DeleteDrinkAction(this.drink.uuid));
+                            //Navigator.pushAndRemoveUntil(
+                            //    context,
+                            //    NoopHomeScreen.route(),
+                            //    (_) => false,
+                            //);
+                        },
+                    ),
+                ],
+                elevation: 24.0,
             ),
         );
     }

@@ -1,6 +1,8 @@
 import 'package:mixer_remote/constants.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mixer_remote/drink.dart';
+import 'package:mixer_remote/user.dart';
+import 'package:mixer_remote/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -38,7 +40,11 @@ class ApiService {
 
         String token;
         if (t == HeaderType.Standard) {
-            token = accessToken; } else { token = refreshToken; } m.addAll(authHeaders(token));
+            token = accessToken; 
+        } else {
+            token = refreshToken;
+        }
+        m.addAll(authHeaders(token));
         return m;
     }
 
@@ -56,6 +62,12 @@ class ApiService {
         var respBody = json.decode(resp.body);
         accessToken = respBody["access_token"];
         refreshToken = respBody["refresh_token"];
+        var up = UserPreferences();
+        up.getUser().then((User u) {
+            u.accessToken = accessToken;
+            u.refreshToken = refreshToken;
+            up.saveUser(u);
+        });
     }
 
     Future<List<Drink>> getDrinksByUser(String username) async {
@@ -128,4 +140,5 @@ class ApiService {
             return respBody["error"];
         }
     }
+
 }
