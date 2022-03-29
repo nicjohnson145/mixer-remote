@@ -248,7 +248,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             setState(() {
                 futureId = api.createDrink(d);
                 futureId!.then((val) {
-                    Navigator.of(context).pushNamed(Routes.Dashboard);
+                    Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
                 }).catchError((e) {
                     showErrorSnackbar(context, e);
                 });
