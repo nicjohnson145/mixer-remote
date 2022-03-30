@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mixer_remote/drink.dart';
 import 'package:mixer_remote/views/hamburger.dart';
-import 'package:mixer_remote/auth.dart';
 import 'package:mixer_remote/api_service.dart';
-import 'package:provider/provider.dart';
+import 'package:mixer_remote/common.dart';
+import 'package:mixer_remote/constants.dart';
 
-class DrinkDetails {
-    final Drink drink;
+class DrinkDetails extends StatefulWidget {
+    Drink drink;
 
     DrinkDetails({
+        Key? key,
         required this.drink,
-    });
+    }) : super(key: key);
+
+    @override
+    _DrinkDetailsState createState() => _DrinkDetailsState();
+
+}
+
+class _DrinkDetailsState extends State<DrinkDetails> {
+
+    Future<void>? deleteFuture;
 
     EdgeInsetsGeometry get verticalPadding {
         return const EdgeInsets.symmetric(vertical: 10.0);
@@ -23,46 +33,54 @@ class DrinkDetails {
         );
     }
 
+    @override
     Widget build(BuildContext context) {
-        var mainBody = getMainBody();
         return Scaffold(
             appBar: AppBar(
-                title: Text(drink.name),
-                actions: const [
-                    DeleteDrinkButton(),
-                    Hamburger(),
-                ],
-            ),
+                title: Text(widget.drink.name),
+                actions: [
+                    IconButton(
+                        icon: const Icon(Icons.delete_forever),
+                        onPressed: () {
+                            confirmDelete(context);
+                        }
+                    ),
+                    const Hamburger(),
+                ],),
             body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Scrollbar(
-                    child: ListView.builder(
-                        itemCount: mainBody.length,
-                        itemBuilder: (BuildContext context, int index) {
-                            return mainBody[index];
-                        },
-                    ),
-                ),
+                child: deleteFuture == null ? getMainBody() : loadingSpinner(context),
             ),
         );
     }
 
-    List<Widget> getMainBody() {
+    Widget getMainBody() {
         List<Widget> components = [
-            basicValue("Primary Alcohol", drink.primaryAlcohol),
+            basicValue("Primary Alcohol", widget.drink.primaryAlcohol),
         ];
-        if (drink.preferredGlass != null) {
-            components.add(basicValue("Preferred Glass", drink.preferredGlass!));
+        if (widget.drink.preferredGlass != null) {
+            components.add(basicValue("Preferred Glass", widget.drink.preferredGlass!));
         }
-        if (drink.instructions != null) {
-            components.add(basicValue("Instructions", drink.instructions!));
+        if (widget.drink.instructions != null) {
+            components.add(basicValue("Instructions", widget.drink.instructions!));
         }
-        if (drink.notes != null) {
-            components.add(basicValue("Notes", drink.notes!));
+        if (widget.drink.notes != null) {
+            components.add(basicValue("Notes", widget.drink.notes!));
         }
         components.add(basicValue("Ingredients", ""));
         components.addAll(getIngredientsList());
-        return components;
+
+        return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Scrollbar(
+                child: ListView.builder(
+                    itemCount: components.length,
+                    itemBuilder: (BuildContext context, int index) {
+                        return components[index];
+                    },
+                ),
+            ),
+        );
     }
 
     Widget basicValue(String label, String value) {
@@ -87,10 +105,42 @@ class DrinkDetails {
 
     List<Widget> getIngredientsList() {
         List<Widget> ingredients = [];
-        for (var i = 0; i < drink.ingredients.length; i++) {
-            ingredients.add(_IngredientCard(drink.ingredients[i]));
+        for (var i = 0; i < widget.drink.ingredients.length; i++) {
+            ingredients.add(_IngredientCard(widget.drink.ingredients[i]));
         }
         return ingredients;
+    }
+
+    Future<void> confirmDelete(BuildContext context) async {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => AlertDialog(
+                title: const Text("Confirm"),
+                content: const Text("Are you sure you want to delete? This action cannot be undone"),
+                actions: <Widget>[
+                    TextButton(
+                        child: const Text('No'),
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                        },
+                    ),
+                    TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () {
+                            var api = ApiServiceMgr.getInstance();
+                            setState(() {
+                                deleteFuture = api.deleteDrink(widget.drink.id);
+                                deleteFuture!.then((_) {
+                                    Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
+                                });
+                            });
+                        },
+                    ),
+                ],
+                elevation: 24.0,
+            ),
+        );
     }
 }
 
@@ -111,57 +161,6 @@ class _IngredientCard extends StatelessWidget {
                         child: Text(ingredient),
                     ),
                 ],
-            ),
-        );
-    }
-}
-
-class DeleteDrinkButton extends StatelessWidget {
-
-    const DeleteDrinkButton({Key? key}) : super(key: key);
-
-    @override
-    Widget build(BuildContext context) {
-        return IconButton(
-            icon: const Icon(Icons.delete_forever),
-            onPressed: () {
-                confirmDelete(context);
-            }
-        );
-    }
-
-    Future<void> confirmDelete(BuildContext context) async {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => AlertDialog(
-                title: const Text("Confirm"),
-                content: const Text("Are you sure you want to delete? This action cannot be undone"),
-                actions: <Widget>[
-                    TextButton(
-                        child: const Text('No'),
-                        onPressed: () {
-                            Navigator.of(context).pop();
-                        },
-                    ),
-                    TextButton(
-                        child: const Text('Yes'),
-                        onPressed: () {
-                            print("woo");
-                            //var u = Provider.of<UserProvider>(context).user!;
-                            //var api = ApiService(accessToken: u.accessToken, refreshToken: u.refreshToken);
-
-                            //StoreProvider.of<AppState>(context)
-                            //    .dispatch(DeleteDrinkAction(this.drink.uuid));
-                            //Navigator.pushAndRemoveUntil(
-                            //    context,
-                            //    NoopHomeScreen.route(),
-                            //    (_) => false,
-                            //);
-                        },
-                    ),
-                ],
-                elevation: 24.0,
             ),
         );
     }

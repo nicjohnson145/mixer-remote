@@ -41,7 +41,7 @@ class _SingleDrinkState extends State<SingleDrink> {
                         }
 
                         final d = snapshot.data as Drink;
-                        return DrinkDetails(drink: d).build(context);
+                        return DrinkDetails(drink: d);
                     default:
                         return loadingSpinner(context);
                 }

@@ -130,7 +130,7 @@ class ApiService {
 
         var respBody = json.decode(resp.body);
         if (resp.statusCode != 200) {
-            throw Exception("oh shit oh fuck");
+            throw Exception("error getting drink by id: " + id.toString());
         }
 
         return Drink.fromJson(respBody["drink"]);
@@ -156,4 +156,18 @@ class ApiService {
         }
     }
 
+    Future<void> deleteDrink(Int64 id) async {
+        await setAuth();
+        final resp = await http.delete(
+            Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
+            headers: headers(HeaderType.Standard),
+        );
+        if (resp.statusCode == 401) {
+            reauthenticate();
+            return deleteDrink(id);
+        }
+        if (resp.statusCode != 200) {
+            throw Exception("failed to delete drink");
+        }
+    }
 }
