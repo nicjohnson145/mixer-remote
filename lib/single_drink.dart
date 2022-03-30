@@ -3,6 +3,7 @@ import 'package:mixer_remote/user.dart';
 import 'package:mixer_remote/views/drink_details.dart';
 import 'package:mixer_remote/common.dart';
 import 'package:mixer_remote/auth.dart';
+import 'package:mixer_remote/user_drinks.dart';
 import 'package:mixer_remote/drink.dart';
 import 'package:mixer_remote/api_service.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class _SingleDrinkState extends State<SingleDrink> {
                 switch (snapshot.connectionState) {
                     case ConnectionState.done:
                         if (snapshot.hasError) {
-                            return errorScreen("Error: ${snapshot.error}", context);
+                            return const UserDrinks();
                         }
 
                         final d = snapshot.data as Drink;

@@ -130,7 +130,7 @@ class ApiService {
 
         var respBody = json.decode(resp.body);
         if (resp.statusCode != 200) {
-            throw Exception("error getting drink by id: " + id.toString());
+            return Future.error("error getting drink by id: " + id.toString());
         }
 
         return Drink.fromJson(respBody["drink"]);
