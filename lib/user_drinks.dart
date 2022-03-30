@@ -31,7 +31,7 @@ class  _UserDrinksState extends State<UserDrinks> {
             );
         }
 
-        Future<List<Drink>> drinks = ApiService(accessToken: user.accessToken, refreshToken:  user.refreshToken).getDrinksByUser(user.username);
+        Future<List<Drink>> drinks = ApiServiceMgr.getInstance().getDrinksByUser(user.username);
 
         return FutureBuilder(
             future: drinks,

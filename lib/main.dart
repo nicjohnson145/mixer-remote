@@ -52,12 +52,8 @@ class MyApp extends StatelessWidget {
                                 }
                                 // We did find something, try to refresh its credentials
                                 try{
-                                    var a = ApiService(accessToken: u.accessToken, refreshToken: u.refreshToken);
+                                    var a = ApiServiceMgr.getInstance();
                                     a.reauthenticate();
-                                    // If we're successful, write the new credentials back to disk
-                                    u.accessToken = a.accessToken;
-                                    u.refreshToken = a.refreshToken;
-                                    UserPreferences().saveUser(u);
                                 } catch(e) {
                                     // Something went wrong, back to login page and try again
                                     return returnLogin();

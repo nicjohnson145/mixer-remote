@@ -234,8 +234,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         }
 
         if (allValid) {
-            var user = Provider.of<UserProvider>(context, listen: false).user!;
-            var api = ApiService(accessToken: user.accessToken, refreshToken: user.refreshToken);
+            var api = ApiServiceMgr.getInstance();
             DrinkRequest d = DrinkRequest(
                 name: nameController.text,
                 primaryAlcohol: primaryAlcoholController.text,

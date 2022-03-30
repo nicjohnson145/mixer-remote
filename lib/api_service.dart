@@ -13,14 +13,19 @@ enum HeaderType {
 
 class UnauthorizedError implements Exception {}
 
-class ApiService {
-    String accessToken;
-    String refreshToken;
+class ApiServiceMgr {
+    static ApiService? _instance;
 
-    ApiService({
-        required this.accessToken,
-        required this.refreshToken,
-    });
+    static ApiService getInstance() {
+        _instance ??= ApiService();
+        return _instance!;
+    }
+}
+
+class ApiService {
+
+    String? accessToken;
+    String? refreshToken;
 
     static Map<String, String> basicHeaders() {
         return {
@@ -34,21 +39,28 @@ class ApiService {
         };
     }
 
+    Future<void> setAuth() async {
+        var u = await UserPreferences().getUser();
+        accessToken = u.accessToken;
+        refreshToken = u.refreshToken;
+    }
+
     Map<String, String> headers(HeaderType t) {
         Map<String, String> m = {};
         m.addAll(basicHeaders());
 
         String token;
         if (t == HeaderType.Standard) {
-            token = accessToken; 
+            token = accessToken!; 
         } else {
-            token = refreshToken;
+            token = refreshToken!;
         }
         m.addAll(authHeaders(token));
         return m;
     }
 
     void reauthenticate() async {
+        await setAuth();
         final resp = await http.post(
             Uri.parse(Urls.Refresh),
             headers: headers(HeaderType.Refresh)
@@ -60,17 +72,17 @@ class ApiService {
         }
 
         var respBody = json.decode(resp.body);
-        accessToken = respBody["access_token"];
-        refreshToken = respBody["refresh_token"];
+        var newAccess = respBody["access_token"];
+        var newRefresh = respBody["refresh_token"];
         var up = UserPreferences();
-        up.getUser().then((User u) {
-            u.accessToken = accessToken;
-            u.refreshToken = refreshToken;
-            up.saveUser(u);
-        });
+        var u = await up.getUser();
+        u.accessToken = newAccess;
+        u.refreshToken = newRefresh;
+        await up.saveUser(u);
     }
 
     Future<List<Drink>> getDrinksByUser(String username) async {
+        await setAuth();
         final resp = await http.get(
             Uri.parse(Urls.DrinksByUser + "/" + username),
             headers: headers(HeaderType.Standard),
@@ -93,6 +105,7 @@ class ApiService {
     }
 
     Future<bool> tokenCheck() async {
+        await setAuth();
         final resp = await http.get(
             Uri.parse(Urls.apiv1 + "/health"),
             headers: headers(HeaderType.Standard),
@@ -105,6 +118,7 @@ class ApiService {
     }
 
     Future<Drink> getDrinkByID(Int64 id) async {
+        await setAuth();
         final resp = await http.get(
             Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
             headers: headers(HeaderType.Standard),
@@ -123,6 +137,7 @@ class ApiService {
     }
 
     Future<Int64> createDrink(DrinkRequest d) async {
+        await setAuth();
         final resp = await http.post(
             Uri.parse(Urls.DrinksV1 + "/" + "create"),
             headers: headers(HeaderType.Standard),

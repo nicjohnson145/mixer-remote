@@ -30,7 +30,7 @@ class _SingleDrinkState extends State<SingleDrink> {
 
         final args = ModalRoute.of(context)!.settings.arguments as SingleDrinkArg;
 
-        Future<Drink> drink = ApiService(accessToken: user.accessToken, refreshToken:  user.refreshToken).getDrinkByID(args.id);
+        Future<Drink> drink = ApiServiceMgr.getInstance().getDrinkByID(args.id);
         return FutureBuilder(
             future: drink,
             builder: (context, snapshot) {
