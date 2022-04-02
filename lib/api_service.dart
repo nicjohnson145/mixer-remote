@@ -4,6 +4,7 @@ import 'package:mixer/drink.dart';
 import 'package:mixer/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:tuple/tuple.dart';
 
 enum HeaderType {
     Refresh,
@@ -58,11 +59,7 @@ class ApiService {
         return m;
     }
 
-    Future<void> reauthenticate({int count=0}) async {
-        if (count >= 2) {
-            throw Exception("could not reauthenticate after $count times");
-        }
-
+    Future<void> reauthenticate() async {
         await setAuth();
         final resp = await http.post(
             Uri.parse(Urls.Refresh),
@@ -84,20 +81,15 @@ class ApiService {
         await up.saveUser(u);
     }
 
-    Future<List<Drink>> getDrinksByUser(String username, {int count=0}) async {
+    Future<List<Drink>> getDrinksByUser(String username) async {
         await setAuth();
         final resp = await http.get(
             Uri.parse(Urls.DrinksByUser + "/" + username),
             headers: headers(HeaderType.Standard),
         );
         if (resp.statusCode == 401) {
-            count += 1;
-            try{
-                await reauthenticate(count: count);
-            } catch(e) {
-                return Future.error(e.toString());
-            }
-            return getDrinksByUser(username, count: count);
+            await reauthenticate();
+            return getDrinksByUser(username);
         }
 
         var respBody = json.decode(resp.body);
@@ -112,20 +104,15 @@ class ApiService {
         }
     }
 
-    Future<Drink> getDrinkByID(Int64 id, {int count=0}) async {
+    Future<Drink> getDrinkByID(Int64 id) async {
         await setAuth();
         final resp = await http.get(
             Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
             headers: headers(HeaderType.Standard),
         );
         if (resp.statusCode == 401) {
-            count += 1;
-            try{
-                await reauthenticate(count: count);
-            } catch(e) {
-                return Future.error(e.toString());
-            }
-            return getDrinkByID(id, count: count);
+            await reauthenticate();
+            return getDrinkByID(id);
         }
 
         var respBody = json.decode(resp.body);
@@ -136,7 +123,7 @@ class ApiService {
         return Drink.fromJson(respBody["drink"]);
     }
 
-    Future<Int64> createDrink(DrinkRequest d, {int count=0}) async {
+    Future<Int64> createDrink(DrinkRequest d) async {
         await setAuth();
         final resp = await http.post(
             Uri.parse(Urls.DrinksV1 + "/" + "create"),
@@ -144,13 +131,8 @@ class ApiService {
             body: json.encode(d.toJson()),
         );
         if (resp.statusCode == 401) {
-            count += 1;
-            try{
-                await reauthenticate(count: count);
-            } catch(e) {
-                return Future.error(e.toString());
-            }
-            return createDrink(d, count: count);
+            await reauthenticate();
+            return createDrink(d);
         }
 
         var respBody = json.decode(resp.body);
@@ -161,27 +143,22 @@ class ApiService {
         }
     }
 
-    Future<void> deleteDrink(Int64 id, {int count=0}) async {
+    Future<void> deleteDrink(Int64 id) async {
         await setAuth();
         final resp = await http.delete(
             Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
             headers: headers(HeaderType.Standard),
         );
         if (resp.statusCode == 401) {
-            count += 1;
-            try{
-                await reauthenticate(count: count);
-            } catch(e) {
-                return Future.error(e.toString());
-            }
-            return deleteDrink(id, count: count);
+            await reauthenticate();
+            return deleteDrink(id);
         }
         if (resp.statusCode != 200) {
             throw Exception("failed to delete drink");
         }
     }
 
-    Future<bool> updateDrink(Int64 id, DrinkRequest d, {int count=0}) async {
+    Future<bool> updateDrink(Int64 id, DrinkRequest d) async {
         await setAuth();
         final resp = await http.put(
             Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
@@ -189,12 +166,8 @@ class ApiService {
             body: json.encode(d.toJson()),
         );
         if (resp.statusCode == 401) {
-            try{
-                await reauthenticate(count: count);
-            } catch(e) {
-                return Future.error(e.toString());
-            }
-            return updateDrink(id, d, count: count);
+            await reauthenticate();
+            return updateDrink(id, d);
         }
 
         var respBody = json.decode(resp.body);
@@ -202,6 +175,26 @@ class ApiService {
             return true;
         } else {
             return respBody["error"];
+        }
+    }
+
+    Future<Tuple2<bool, String>> changePassword(String newPassword) async {
+        await setAuth();
+        final resp = await http.post(
+            Uri.parse(Urls.AuthV1 + "/change-password"),
+            headers: headers(HeaderType.Standard),
+            body: json.encode({"new_password": newPassword}),
+        );
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return changePassword(newPassword);
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode == 200) {
+            return const Tuple2(true, "");
+        } else {
+            return Tuple2(false, respBody["error"]);
         }
     }
 }

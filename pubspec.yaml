@@ -39,6 +39,7 @@ dependencies:
   provider: ^6.0.2
   another_flushbar: ^1.10.28
   fixnum: ^1.0.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:
