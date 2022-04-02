@@ -20,6 +20,7 @@ class Routes {
     static const String DrinkDetails = "/drink-details";
     static const String AddEdit = "/add-edit";
     static const String UserSeach = "/user-search";
+    static const String ChangePassword = "/change-password";
 }
 
 const String AuthHeaderName = "MixerAuth";

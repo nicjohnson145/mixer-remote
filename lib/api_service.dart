@@ -4,6 +4,7 @@ import 'package:mixer/drink.dart';
 import 'package:mixer/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:tuple/tuple.dart';
 
 enum HeaderType {
     Refresh,
@@ -174,6 +175,26 @@ class ApiService {
             return true;
         } else {
             return respBody["error"];
+        }
+    }
+
+    Future<Tuple2<bool, String>> changePassword(String newPassword) async {
+        await setAuth();
+        final resp = await http.post(
+            Uri.parse(Urls.AuthV1 + "/change-password"),
+            headers: headers(HeaderType.Standard),
+            body: json.encode({"new_password": newPassword}),
+        );
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return changePassword(newPassword);
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode == 200) {
+            return const Tuple2(true, "");
+        } else {
+            return Tuple2(false, respBody["error"]);
         }
     }
 }
