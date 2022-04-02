@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mixer/drink.dart';
+import 'package:mixer/auth.dart';
 import 'package:mixer/views/hamburger.dart';
+import 'package:provider/provider.dart';
 import 'package:mixer/api_service.dart';
 import 'package:mixer/add_edit.dart';
 import 'package:mixer/common.dart';
@@ -52,7 +54,16 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: deleteFuture == null ? getMainBody() : loadingSpinner(context),
             ),
-            floatingActionButton: FloatingActionButton(
+            floatingActionButton: getFloatingActionButton(context),
+        );
+    }
+
+    Widget getFloatingActionButton(BuildContext context) {
+        var user = Provider.of<UserProvider>(context).user;
+        if (user!.username != widget.drink.username) {
+            return Container();
+        } else {
+            return FloatingActionButton(
                 onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -61,8 +72,8 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                     ));
                 },
                 child: const Icon(Icons.edit),
-            ),
-        );
+            );
+        }
     }
 
     Widget getMainBody() {

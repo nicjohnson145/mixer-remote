@@ -6,35 +6,65 @@ import 'package:mixer/constants.dart';
 class DrinkListView {
     List<Drink> drinks;
     void Function(Drink) onDrinkTap;
+    String? username;
 
     DrinkListView({
         required this.drinks,
         required this.onDrinkTap,
+        this.username,
     });
 
     Widget build(BuildContext context) {
+        String title;
+        if (username == null) {
+            title = "Drinks";
+        } else {
+            title = "${username!}'s Drinks";
+        }
         return Scaffold(
             appBar: AppBar(
-                title: const Text("Drinks"),
+                title: Text(title),
                 actions: const <Widget>[
                     Hamburger(),
                 ],
             ),
-            body: ListView.builder(
-                itemCount: drinks.length,
-                itemBuilder: (BuildContext context, int i) {
-                    return _DrinkLineItem(
-                        drink: drinks[i],
-                        onTap: onDrinkTap,
-                    ).build(context);
-                },
-            ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.AddEdit);
-                },
-                child: const Icon(Icons.add),
-            ),
+            body: getBody(context),
+            floatingActionButton: getFloatingActionButton(context),
+        );
+    }
+
+    Widget getBody(BuildContext context) {
+        // If you're looking at someone else's drinks
+        if (drinks.isEmpty && username != null) {
+            return Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0,
+                    horizontal: 15.0,
+                ),
+                child: Text("Either $username has no public drinks, or does not exist"),
+            );
+        }
+
+        return ListView.builder(
+            itemCount: drinks.length,
+            itemBuilder: (BuildContext context, int i) {
+                return _DrinkLineItem(
+                    drink: drinks[i],
+                    onTap: onDrinkTap,
+                ).build(context);
+            },
+        );
+    }
+
+    Widget getFloatingActionButton(BuildContext context) {
+        if (username != null) {
+            return Container();
+        }
+        return FloatingActionButton(
+            onPressed: () {
+                Navigator.of(context).pushNamed(Routes.AddEdit);
+            },
+            child: const Icon(Icons.add),
         );
     }
 }

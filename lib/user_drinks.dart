@@ -9,7 +9,12 @@ import 'package:mixer/views/drink_list.dart';
 import 'package:provider/provider.dart';
 
 class UserDrinks extends StatefulWidget {
-    const UserDrinks({Key? key}) : super(key: key);
+    String? username;
+
+    UserDrinks({
+        Key? key,
+        this.username,
+    }) : super(key: key);
 
     @override
     _UserDrinksState createState() => _UserDrinksState();
@@ -20,18 +25,23 @@ class  _UserDrinksState extends State<UserDrinks> {
 
     @override
     Widget build(BuildContext context) {
-        User? user = Provider.of<UserProvider>(context).user;
+        String username;
+        if (widget.username == null) {
+            User? user = Provider.of<UserProvider>(context).user;
 
-        const title = Text("Drinks");
+            const title = Text("Drinks");
 
-        if (user == null) {
-            return Scaffold(
-                appBar: AppBar(title: title),
-                body: errorScreen("ERROR", context),
-            );
+            if (user == null) {
+                return Scaffold(
+                    appBar: AppBar(title: title),
+                    body: errorScreen("ERROR", context),
+                );
+            }
+            username = user.username;
+        } else {
+            username = widget.username!;
         }
-
-        Future<List<Drink>> drinks = ApiServiceMgr.getInstance().getDrinksByUser(user.username);
+        Future<List<Drink>> drinks = ApiServiceMgr.getInstance().getDrinksByUser(username);
 
         return FutureBuilder(
             future: drinks,
@@ -51,6 +61,7 @@ class  _UserDrinksState extends State<UserDrinks> {
                                     arguments: SingleDrinkArg(id: drink.id),
                                 );
                             },
+                            username: widget.username,
                         ).build(context);
                     default:
                         return loadingSpinner(context);

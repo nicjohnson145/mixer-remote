@@ -38,7 +38,7 @@ class _SingleDrinkState extends State<SingleDrink> {
                 switch (snapshot.connectionState) {
                     case ConnectionState.done:
                         if (snapshot.hasError) {
-                            return const UserDrinks();
+                            return UserDrinks();
                         }
 
                         final d = snapshot.data as Drink;

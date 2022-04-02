@@ -4,6 +4,7 @@ import 'package:mixer/constants.dart';
 
 enum HamburgerAction {
     Logout,
+    ViewOtherUser,
 }
 
 class Hamburger extends StatelessWidget {
@@ -19,6 +20,10 @@ class Hamburger extends StatelessWidget {
                         value: HamburgerAction.Logout,
                         child: Text("Logout"),
                     ),
+                    const PopupMenuItem<HamburgerAction>(
+                        value: HamburgerAction.ViewOtherUser,
+                        child: Text("View Other User"),
+                    ),
                 ];
             },
             onSelected: (HamburgerAction action) {
@@ -26,6 +31,9 @@ class Hamburger extends StatelessWidget {
                     case HamburgerAction.Logout:
                         UserPreferences().removeUser(); 
                         Navigator.pushReplacementNamed(context, Routes.Login);
+                        break;
+                    case HamburgerAction.ViewOtherUser:
+                        Navigator.of(context).pushNamed(Routes.UserSeach);
                         break;
                 }
             },

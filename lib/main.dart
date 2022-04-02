@@ -9,6 +9,7 @@ import 'package:mixer/single_drink.dart';
 import 'package:mixer/auth.dart';
 import 'package:mixer/constants.dart';
 import 'package:mixer/user_drinks.dart';
+import 'package:mixer/user_search.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
                                 // We've either got valid credentials, or we've successfully
                                 // refreshed, to the drinks now.
                                 Provider.of<UserProvider>(context).setUser(u);
-                                return const UserDrinks();
+                                return UserDrinks();
                             default:
                                 return loadingSpinner(context);
                         }
@@ -70,9 +71,10 @@ class MyApp extends StatelessWidget {
                 ),
                 routes: {
                     Routes.Login: (context) => LoginPage(),
-                    Routes.Dashboard: (context) => const UserDrinks(),
+                    Routes.Dashboard: (context) => UserDrinks(),
                     Routes.DrinkDetails: (context) => const SingleDrink(),
                     Routes.AddEdit: (context) => AddEditDrink(),
+                    Routes.UserSeach: (context) => const UserSearch(),
                 },
             ),
         );
