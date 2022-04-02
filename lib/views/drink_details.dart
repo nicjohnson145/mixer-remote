@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mixer_remote/drink.dart';
 import 'package:mixer_remote/views/hamburger.dart';
 import 'package:mixer_remote/api_service.dart';
+import 'package:mixer_remote/add_edit.dart';
 import 'package:mixer_remote/common.dart';
 import 'package:mixer_remote/constants.dart';
 
@@ -50,6 +51,16 @@ class _DrinkDetailsState extends State<DrinkDetails> {
             body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: deleteFuture == null ? getMainBody() : loadingSpinner(context),
+            ),
+            floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) {
+                            return AddEditDrink(drink: widget.drink);
+                        },
+                    ));
+                },
+                child: const Icon(Icons.edit),
             ),
         );
     }

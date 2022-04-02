@@ -5,8 +5,8 @@ import 'package:mixer_remote/constants.dart';
 import 'package:mixer_remote/common.dart';
 import 'package:fixnum/fixnum.dart';
 
-const String Public = "Public";
-const String Private = "Private";
+const String Public = "public";
+const String Private = "private";
 
 class AddEditDrink extends StatefulWidget {
 
@@ -34,7 +34,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
 
     FocusNode ingredientsFocus = FocusNode();
     Int64? id;
-    Future<Int64>? futureId;
+    Future<dynamic>? future;
 
     @override
     void initState() {
@@ -143,9 +143,10 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                         });
                     },
                     items: <String>[Public, Private].map<DropdownMenuItem<String>>((String val) {
+                        var text = val[0].toUpperCase() + val.substring(1);
                         return DropdownMenuItem<String>(
                             value: val,
-                            child: Text(val),
+                            child: Text(text),
                         );
                     }).toList(),
                 ),
@@ -165,7 +166,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                     vertical: 8.0,
                     horizontal: 25.0,
                 ),
-                child: futureId == null ? buildScrollbar(context) : buildFutureBuilder(context),
+                child: future == null ? buildScrollbar(context) : buildFutureBuilder(context),
             ),
             floatingActionButton: Builder(
                 builder: (context) {
@@ -242,8 +243,12 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 publicity: publicity ?? Public,
             );
             setState(() {
-                futureId = api.createDrink(d);
-                futureId!.then((val) {
+                if (widget.drink == null) {
+                    future = api.createDrink(d);
+                } else {
+                    future = api.updateDrink(widget.drink!.id, d);
+                }
+                future!.then((val) {
                     Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
                 }).catchError((e) {
                     showErrorSnackbar(context, e);

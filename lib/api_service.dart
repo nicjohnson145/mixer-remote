@@ -170,4 +170,24 @@ class ApiService {
             throw Exception("failed to delete drink");
         }
     }
+
+    Future<bool> updateDrink(Int64 id, DrinkRequest d) async {
+        await setAuth();
+        final resp = await http.put(
+            Uri.parse(Urls.DrinksV1 + "/" + id.toString()),
+            headers: headers(HeaderType.Standard),
+            body: json.encode(d.toJson()),
+        );
+        if (resp.statusCode == 401) {
+            reauthenticate();
+            return updateDrink(id, d);
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode == 200) {
+            return true;
+        } else {
+            return respBody["error"];
+        }
+    }
 }
