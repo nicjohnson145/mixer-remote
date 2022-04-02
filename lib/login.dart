@@ -75,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
                 CircularProgressIndicator(),
+                const SizedBox(width: 10.0),
                 Text("Authenticating"),
             ],
         );
