@@ -17,6 +17,7 @@ class Routes {
     static const String Login = "/login";
     static const String DrinkDetails = "/drink-details";
     static const String AddEdit = "/add-edit";
+    static const String UserSeach = "/user-search";
 }
 
 const String AuthHeaderName = "MixerAuth";
