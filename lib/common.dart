@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mixer/constants.dart';
 import 'package:mixer/user_preferences.dart';
+import 'package:mixer/views/hamburger.dart';
 
 Widget errorScreen(String text, BuildContext context) {
     return Column(
@@ -30,7 +31,12 @@ class SingleDrinkArg {
 
 Widget loadingSpinner(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Loading")),
+        appBar: AppBar(
+            title: const Text("Loading"),
+            actions: const <Widget>[
+                Hamburger(),
+            ],
+        ),
         body: const Center(
             child: CircularProgressIndicator(),
         ),

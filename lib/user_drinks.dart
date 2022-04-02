@@ -51,7 +51,6 @@ class  _UserDrinksState extends State<UserDrinks> {
                         if (snapshot.hasError) {
                             return errorScreen("Error: ${snapshot.error}", context);
                         }
-
                         final dl = snapshot.data as List<Drink>;
                         return DrinkListView(
                             drinks: dl,
@@ -64,6 +63,9 @@ class  _UserDrinksState extends State<UserDrinks> {
                             username: widget.username,
                         ).build(context);
                     default:
+                        if (snapshot.hasError) {
+                            return errorScreen("Error: ${snapshot.error}", context);
+                        }
                         return loadingSpinner(context);
                 }
             }
