@@ -45,11 +45,13 @@ class DrinkListView {
             );
         }
 
+        var sortedDrinks = List<Drink>.from(drinks);
+        sortedDrinks.sort((a, b) => a.name.compareTo(b.name));
         return ListView.builder(
-            itemCount: drinks.length,
+            itemCount: sortedDrinks.length,
             itemBuilder: (BuildContext context, int i) {
                 return _DrinkLineItem(
-                    drink: drinks[i],
+                    drink: sortedDrinks[i],
                     onTap: onDrinkTap,
                 ).build(context);
             },
