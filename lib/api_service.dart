@@ -1,8 +1,8 @@
-import 'package:mixer_remote/constants.dart';
+import 'package:mixer/constants.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/user.dart';
-import 'package:mixer_remote/user_preferences.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/user.dart';
+import 'package:mixer/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

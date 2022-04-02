@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/user.dart';
-import 'package:mixer_remote/views/drink_details.dart';
-import 'package:mixer_remote/common.dart';
-import 'package:mixer_remote/auth.dart';
-import 'package:mixer_remote/user_drinks.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/api_service.dart';
+import 'package:mixer/user.dart';
+import 'package:mixer/views/drink_details.dart';
+import 'package:mixer/common.dart';
+import 'package:mixer/auth.dart';
+import 'package:mixer/user_drinks.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/api_service.dart';
 import 'package:provider/provider.dart';
 
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/views/hamburger.dart';
-import 'package:mixer_remote/api_service.dart';
-import 'package:mixer_remote/add_edit.dart';
-import 'package:mixer_remote/common.dart';
-import 'package:mixer_remote/constants.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/views/hamburger.dart';
+import 'package:mixer/api_service.dart';
+import 'package:mixer/add_edit.dart';
+import 'package:mixer/common.dart';
+import 'package:mixer/constants.dart';
 
 class DrinkDetails extends StatefulWidget {
     Drink drink;

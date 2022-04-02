@@ -1,4 +1,4 @@
-import 'package:mixer_remote/user.dart';
+import 'package:mixer/user.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/user.dart';
-import 'package:mixer_remote/auth.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/api_service.dart';
-import 'package:mixer_remote/common.dart';
-import 'package:mixer_remote/constants.dart';
-import 'package:mixer_remote/views/drink_list.dart';
+import 'package:mixer/user.dart';
+import 'package:mixer/auth.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/api_service.dart';
+import 'package:mixer/common.dart';
+import 'package:mixer/constants.dart';
+import 'package:mixer/views/drink_list.dart';
 import 'package:provider/provider.dart';
 
 class UserDrinks extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/user_preferences.dart';
-import 'package:mixer_remote/constants.dart';
+import 'package:mixer/user_preferences.dart';
+import 'package:mixer/constants.dart';
 
 enum HamburgerAction {
     Logout,

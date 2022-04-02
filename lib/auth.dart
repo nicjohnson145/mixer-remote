@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mixer_remote/constants.dart';
-import 'package:mixer_remote/user.dart';
-import 'package:mixer_remote/user_preferences.dart';
-import 'package:mixer_remote/api_service.dart';
+import 'package:mixer/constants.dart';
+import 'package:mixer/user.dart';
+import 'package:mixer/user_preferences.dart';
+import 'package:mixer/api_service.dart';
 
 enum Status {
     NotLoggedIn,

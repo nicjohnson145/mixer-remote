@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/views/hamburger.dart';
-import 'package:mixer_remote/constants.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/views/hamburger.dart';
+import 'package:mixer/constants.dart';
 
 class DrinkListView {
     List<Drink> drinks;

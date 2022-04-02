@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:mixer_remote/constants.dart';
-import 'package:mixer_remote/user_preferences.dart';
+import 'package:mixer/constants.dart';
+import 'package:mixer/user_preferences.dart';
 
 Widget errorScreen(String text, BuildContext context) {
     return Column(

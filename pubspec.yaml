@@ -1,5 +1,5 @@
-name: mixer_remote
-description: A new Flutter project.
+name: mixer
+description: Cocktails
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

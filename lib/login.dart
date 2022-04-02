@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/auth.dart';
-import 'package:mixer_remote/user.dart';
-import 'package:mixer_remote/constants.dart';
+import 'package:mixer/auth.dart';
+import 'package:mixer/user.dart';
+import 'package:mixer/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:another_flushbar/flushbar.dart';
 

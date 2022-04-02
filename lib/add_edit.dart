@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mixer_remote/api_service.dart';
-import 'package:mixer_remote/drink.dart';
-import 'package:mixer_remote/constants.dart';
-import 'package:mixer_remote/common.dart';
+import 'package:mixer/api_service.dart';
+import 'package:mixer/drink.dart';
+import 'package:mixer/constants.dart';
+import 'package:mixer/common.dart';
 import 'package:fixnum/fixnum.dart';
 
 const String Public = "public";
