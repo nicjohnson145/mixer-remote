@@ -12,6 +12,7 @@ import 'package:mixer/user_drinks.dart';
 import 'package:mixer/change_password.dart';
 import 'package:mixer/user_search.dart';
 import 'package:provider/provider.dart';
+import 'package:mixer/user_settings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
                     Routes.AddEdit: (context) => AddEditDrink(),
                     Routes.UserSeach: (context) => const UserSearch(),
                     Routes.ChangePassword: (context) => const ChangePassword(),
+                    Routes.Settings: (context) => const UserSettings(),
                 },
             ),
         );
