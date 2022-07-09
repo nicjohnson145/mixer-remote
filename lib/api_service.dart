@@ -2,6 +2,7 @@ import 'package:mixer/constants.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mixer/drink.dart';
 import 'package:mixer/user_preferences.dart';
+import 'package:mixer/models/settings.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:tuple/tuple.dart';
@@ -196,5 +197,45 @@ class ApiService {
         } else {
             return Tuple2(false, respBody["error"]);
         }
+    }
+
+    Future<Settings> getSettings() async {
+        await setAuth();
+        final resp = await http.get(
+            Uri.parse(Urls.Settings),
+            headers: headers(HeaderType.Standard),
+        );
+
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return getSettings();
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode != 200) {
+            throw Exception("error getting settings");
+        }
+        return Settings.fromJson(respBody['settings']);
+    }
+
+    Future<Tuple2<bool, String>> updateSettings(Settings settings) async {
+        await setAuth();
+        final resp = await http.put(
+            Uri.parse(Urls.Settings),
+            headers: headers(HeaderType.Standard),
+            body: json.encode(settings.toJson()),
+        );
+
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return updateSettings(settings);
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode != 200) {
+            return Tuple2(false, respBody["error"]);
+        }
+
+        return const Tuple2(true, "");
     }
 }

@@ -6,6 +6,7 @@ enum HamburgerAction {
     Logout,
     ViewOtherUser,
     ChangePassword,
+    Settings,
 }
 
 class Hamburger extends StatelessWidget {
@@ -29,6 +30,10 @@ class Hamburger extends StatelessWidget {
                         value: HamburgerAction.ChangePassword,
                         child: Text("Change Password"),
                     ),
+                    const PopupMenuItem<HamburgerAction>(
+                        value: HamburgerAction.Settings,
+                        child: Text("Settings"),
+                    ),
                 ];
             },
             onSelected: (HamburgerAction action) {
@@ -42,6 +47,9 @@ class Hamburger extends StatelessWidget {
                         break;
                     case HamburgerAction.ChangePassword:
                         Navigator.of(context).pushNamed(Routes.ChangePassword);
+                        break;
+                    case HamburgerAction.Settings:
+                        Navigator.of(context).pushNamed(Routes.Settings);
                         break;
                 }
             },

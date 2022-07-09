@@ -12,6 +12,7 @@ class Urls {
 
     static const String DrinksV1 = apiv1 + "/drinks";
     static const String DrinksByUser = DrinksV1 + "/by-user";
+    static const String Settings = apiv1 + "/settings";
 }
 
 class Routes {
@@ -21,6 +22,7 @@ class Routes {
     static const String AddEdit = "/add-edit";
     static const String UserSeach = "/user-search";
     static const String ChangePassword = "/change-password";
+    static const String Settings = "/settings";
 }
 
 const String AuthHeaderName = "MixerAuth";
