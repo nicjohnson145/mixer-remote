@@ -24,6 +24,7 @@ class DrinkDetails extends StatefulWidget {
 class _DrinkDetailsState extends State<DrinkDetails> {
 
     Future<void>? deleteFuture;
+    Future<void>? copyFuture;
 
     EdgeInsetsGeometry get verticalPadding {
         return const EdgeInsets.symmetric(vertical: 10.0);
@@ -61,7 +62,20 @@ class _DrinkDetailsState extends State<DrinkDetails> {
     Widget getFloatingActionButton(BuildContext context) {
         var user = Provider.of<UserProvider>(context).user;
         if (user!.username != widget.drink.username) {
-            return Container();
+            return FloatingActionButton(
+                onPressed: () {
+                    var api = ApiServiceMgr.getInstance();
+                    setState(() {
+                        copyFuture = api.copyDrink(widget.drink.id);
+                        copyFuture!.then((_) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
+                        }).catchError((e) {
+                            showErrorSnackbar(context, e.toString());
+                        });
+                    });
+                },
+                child: const Icon(Icons.copy),
+            );
         } else {
             return FloatingActionButton(
                 onPressed: () {
@@ -161,6 +175,15 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                     ),
                 ],
                 elevation: 24.0,
+            ),
+        );
+    }
+
+    void showErrorSnackbar(BuildContext context, String message) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                backgroundColor: Colors.redAccent,
+                content: Text(message),
             ),
         );
     }

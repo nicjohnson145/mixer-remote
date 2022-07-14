@@ -159,6 +159,24 @@ class ApiService {
         }
     }
 
+    Future<void> copyDrink(Int64 id) async {
+        await setAuth();
+        final resp = await http.post(
+            Uri.parse(Urls.DrinksV1 + "/" + id.toString() + "/copy"),
+            headers: headers(HeaderType.Standard),
+        );
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return copyDrink(id);
+        }
+        if (resp.statusCode == 400) {
+            throw Exception("Failed to copy drink. Error message: " + resp.body);
+        }
+        if (resp.statusCode != 200) {
+            throw Exception("Failed to copy drink due to an uknown error.");
+        }
+    }
+
     Future<bool> updateDrink(Int64 id, DrinkRequest d) async {
         await setAuth();
         final resp = await http.put(
