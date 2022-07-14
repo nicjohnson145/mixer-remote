@@ -39,18 +39,22 @@ class _DrinkDetailsState extends State<DrinkDetails> {
 
     @override
     Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-                title: Text(widget.drink.name),
-                actions: [
-                    IconButton(
+        var widgets = <Widget>[];
+        var user = Provider.of<UserProvider>(context).user;
+        if (user!.username == widget.drink.username) {
+            widgets.add(IconButton(
                         icon: const Icon(Icons.delete_forever),
                         onPressed: () {
                             confirmDelete(context);
                         }
-                    ),
-                    const Hamburger(),
-                ],),
+                    ));
+        }
+        widgets.add(const Hamburger());
+        return Scaffold(
+            appBar: AppBar(
+                title: Text(widget.drink.name),
+                actions: widgets
+            ),
             body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: deleteFuture == null ? getMainBody() : loadingSpinner(context),
@@ -169,6 +173,12 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                                 deleteFuture = api.deleteDrink(widget.drink.id);
                                 deleteFuture!.then((_) {
                                     Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
+                                }).catchError((e) {
+                                    // first pop clears the confirmation dialog
+                                    Navigator.pop(context);
+                                    // second pop goes back to drinks page
+                                    Navigator.pop(context);
+                                    showErrorSnackbar(context, e.toString());
                                 });
                             });
                         },
