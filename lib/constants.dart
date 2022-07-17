@@ -13,6 +13,7 @@ class Urls {
     static const String DrinksV1 = apiv1 + "/drinks";
     static const String DrinksByUser = DrinksV1 + "/by-user";
     static const String Settings = apiv1 + "/settings";
+    static const String PublicUsers = apiv1 + "/users";
 }
 
 class Routes {

@@ -256,4 +256,28 @@ class ApiService {
 
         return const Tuple2(true, "");
     }
+
+    Future<List<String>> getAllPublicUsers() async {
+        await setAuth();
+
+        final resp = await http.get(
+            Uri.parse(Urls.PublicUsers),
+            headers: headers(HeaderType.Standard),
+        );
+
+        if (resp.statusCode == 401) {
+            await reauthenticate();
+            return getAllPublicUsers();
+        }
+
+        var respBody = json.decode(resp.body);
+        if (resp.statusCode != 200) {
+            throw Exception("Error getting list of users");
+        }
+        List<String> users = [];
+        for (var i = 0; i < respBody["users"].length; i++) {
+            users.add(respBody["users"][i]);
+        }
+        return users;
+    }
 }

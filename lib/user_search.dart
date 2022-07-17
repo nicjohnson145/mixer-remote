@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mixer/user_drinks.dart';
+import 'package:mixer/api_service.dart';
+import 'package:mixer/common.dart';
 
 class UserSearch extends StatefulWidget {
 
@@ -17,50 +19,67 @@ class _UserSearchState extends State<UserSearch> {
 
     @override
     Widget build(BuildContext context) {
+        Future<List<String>> allUsers = ApiServiceMgr.getInstance().getAllPublicUsers();
+
+        return FutureBuilder(
+            future: allUsers,
+            builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                        if (snapshot.hasError) {
+                            return errorScreen("Error: ${snapshot.error}", context);
+                        }
+                        return userList(context, snapshot.data as List<String>);
+                    default:
+                        if (snapshot.hasError) {
+                            return errorScreen("Error: ${snapshot.error}", context);
+                        }
+                        return loadingSpinner(context);
+                }
+            }
+        );
+    }
+
+    Widget userList(BuildContext context, List<String> users) {
         return Scaffold(
             appBar: AppBar(
-                title: const Text("User Search"),
+                title: const Text("All Users"),
             ),
-            body: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                    horizontal: 15.0,
-                ),
-                child: TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Username",
-                    ),
-                ),
-            ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                    search(context);
+            body: ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (BuildContext context, int i) {
+                    return UserCard(username: users[i]).build(context);
                 },
-                child: const Icon(Icons.person_search)
             ),
         );
     }
 
-    void search(BuildContext context) {
-        if (nameController.text.isEmpty) {
-            showErrorSnackbar(context, "Must give a username");
-            return;
-        }
+}
 
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) {
-                return UserDrinks(username: nameController.text);
-            },
-        ));
-    }
+class UserCard {
+    String username;
 
-    void showErrorSnackbar(BuildContext context, String message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(message),
+    UserCard({
+        required this.username,
+    });
+
+    Widget build(BuildContext context) {
+        return Card(
+            child: InkWell(
+                onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) {
+                            return UserDrinks(username: username);
+                        },
+                    ));
+                },
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0,
+                        horizontal: 10.0,
+                    ),
+                    child: Text(username),
+                ),
             ),
         );
     }
