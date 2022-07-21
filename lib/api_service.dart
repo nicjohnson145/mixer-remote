@@ -140,7 +140,7 @@ class ApiService {
         if (resp.statusCode == 200) {
             return Int64(respBody["id"]);
         } else {
-            return respBody["error"];
+            throw Exception(respBody["error"]);
         }
     }
 
