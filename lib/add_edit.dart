@@ -251,7 +251,8 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 future!.then((val) {
                     Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
                 }).catchError((e) {
-                    showErrorSnackbar(context, e);
+                    showErrorSnackbar(context, e.toString());
+                    Navigator.pop(context);
                 });
             });
         }
