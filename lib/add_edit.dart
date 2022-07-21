@@ -27,12 +27,14 @@ class _AddEditDrinkState extends State<AddEditDrink> {
     TextEditingController primaryAlcoholController = TextEditingController();
     TextEditingController preferredGlassController = TextEditingController();
     TextEditingController instructionsController = TextEditingController();
-    TextEditingController ingredientsController = TextEditingController();
+    TextEditingController newIngredientController = TextEditingController();
+    List<TextEditingController> ingredientsControllers = [];
     TextEditingController notesController = TextEditingController();
     List<String> ingredients = [];
     String? publicity;
 
-    FocusNode ingredientsFocus = FocusNode();
+    List<FocusNode> ingredientsFocusNodes = [];
+    FocusNode newIngredientFocus = FocusNode();
     Int64? id;
     Future<dynamic>? future;
 
@@ -49,6 +51,10 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 instructionsController.text = widget.drink!.instructions!;
             }
             ingredients.addAll(widget.drink!.ingredients);
+            for (var i = 0; i < ingredients.length; i++) {
+                ingredientsControllers.add(TextEditingController(text: ingredients[i]));
+                ingredientsFocusNodes.add(FocusNode());
+            }
             id = widget.drink!.id;
             publicity = widget.drink!.publicity;
         }
@@ -74,57 +80,58 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         );
     }
 
-    Widget getIngredientsBox() {
-        return Padding(
+    List<Widget> getIngredientsList() {
+        List<Widget> list = [];
+        list.add(Padding(
             padding: formRowPadding,
             child: TextField(
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Ingredients',
+                    labelText: 'New Ingredient',
                 ),
-                focusNode: ingredientsFocus,
-                controller: ingredientsController,
+                focusNode: newIngredientFocus,
+                controller: newIngredientController,
                 onSubmitted: (text)
                 {
-                    ingredients.add(text);
-                    ingredientsController.clear();
-                    FocusScope.of(context).requestFocus(ingredientsFocus);
-                    setState(() {});
+                    FocusScope.of(context).requestFocus(newIngredientFocus);
+                    setState(() {
+                        ingredients.add(text);
+                        ingredientsControllers.add(TextEditingController(text: text));
+                        ingredientsFocusNodes.add(FocusNode());
+                        newIngredientController.clear();
+                    });
                 }
             ),
-        );
-    }
-
-    List<Widget> getIngredientsList() {
-        List<Widget> list = [];
+        ));
+        list.add(const Text("Ingredients:"));
         for (var i = 0; i < ingredients.length; i++) {
-            list.add(Dismissible(
+            list.add(ListTile(
                 key: Key(ingredients[i]),
-                background: Container(
-                    color: Colors.red,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0,
-                        ),
-                        child: Row(
-                            children: const <Widget>[
-                                Spacer(),
-                                Icon(Icons.delete),
-                            ],
-                        ),
+                title: TextField(
+                    focusNode: ingredientsFocusNodes[i],
+                    controller: ingredientsControllers[i],
+                    onSubmitted: (text)
+                    {
+                        ingredients[i] = text;
+                        FocusScope.of(context).requestFocus(newIngredientFocus);
+                        setState(() {});
+                    }
+                ),
+                trailing: 
+                    IconButton(
+                        onPressed: () 
+                        {
+                            setState(()
+                            {
+                                ingredients.removeAt(i);
+                                ingredientsControllers.removeAt(i).dispose();
+                                ingredientsFocusNodes.removeAt(i).dispose();
+                            });
+                        }, 
+                        icon: const Icon(Icons.delete)
                     ),
                 ),
-                onDismissed: (direction)
-                {
-                    setState(()
-                    {
-                        ingredients.removeAt(i);
-                    });
-                },
-                child: ListTile(
-                    title: Text(ingredients[i]),
-                ),
-            ));
+            );
         }
         return list;
     }
@@ -186,10 +193,9 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             getSimpleField('Preferred Glass', preferredGlassController),
             getSimpleField('Instructions', instructionsController, numLines:2),
             getSimpleField('Notes', notesController, numLines:2),
-            getIngredientsBox(),
-            getPublicityDropdown(),
         ];
         components.addAll(getIngredientsList());
+        components.add(getPublicityDropdown());
         return Scrollbar(
             child: ListView.builder(
                 itemCount: components.length,
