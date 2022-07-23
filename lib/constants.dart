@@ -1,19 +1,20 @@
 import 'package:flutter/foundation.dart' as Foundation;
+import 'dart:io' show Platform;
 
 class Urls {
     static const String liveBaseURL = "https://mixer.nicjohnson.info";
-    static const String localBaseURL = "http://10.0.2.2:30000";
-    static const String base = Foundation.kReleaseMode ? liveBaseURL : localBaseURL;
-    static const String apiv1 = base + "/api/v1";
+    static final String localBaseURL = Platform.isIOS ? "http://127.0.0.1:30000" : "http://10.0.2.2:30000";
+    static final String base = Foundation.kReleaseMode ? liveBaseURL : localBaseURL;
+    static final String apiv1 = base + "/api/v1";
 
-    static const String AuthV1 = apiv1 + "/auth";
-    static const String Login = AuthV1 + "/login";
-    static const String Refresh = AuthV1 + "/refresh";
+    static final String AuthV1 = apiv1 + "/auth";
+    static final String Login = AuthV1 + "/login";
+    static final String Refresh = AuthV1 + "/refresh";
 
-    static const String DrinksV1 = apiv1 + "/drinks";
-    static const String DrinksByUser = DrinksV1 + "/by-user";
-    static const String Settings = apiv1 + "/settings";
-    static const String PublicUsers = apiv1 + "/users";
+    static final String DrinksV1 = apiv1 + "/drinks";
+    static final String DrinksByUser = DrinksV1 + "/by-user";
+    static final String Settings = apiv1 + "/settings";
+    static final String PublicUsers = apiv1 + "/users";
 }
 
 class Routes {
