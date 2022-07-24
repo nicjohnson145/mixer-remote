@@ -10,6 +10,7 @@ class Drink {
     String? instructions;
     String? notes;
     String publicity;
+    bool underDevelopment;
 
     Drink({
         required this.id,
@@ -21,6 +22,7 @@ class Drink {
         this.instructions,
         this.notes,
         required this.publicity,
+        required this.underDevelopment,
     });
 
     factory Drink.fromJson(Map<String, dynamic> d) {
@@ -34,6 +36,7 @@ class Drink {
             instructions: d["instructions"],
             notes: d["notes"],
             publicity: d["publicity"],
+            underDevelopment: d["under_development"],
         );
     }
 }
@@ -46,6 +49,7 @@ class DrinkRequest {
     String? instructions;
     String? notes;
     String publicity;
+    bool underDevelopment;
 
     DrinkRequest({
         required this.name,
@@ -55,6 +59,7 @@ class DrinkRequest {
         this.instructions,
         this.notes,
         required this.publicity,
+        required this.underDevelopment,
     });
 
     Map<String, dynamic> toJson() {
@@ -63,6 +68,7 @@ class DrinkRequest {
             "primary_alcohol": primaryAlcohol,
             "ingredients": ingredients,
             "publicity": publicity,
+            "under_development": underDevelopment,
         };
         if (preferredGlass != null) {
             j["preferred_glass"] = preferredGlass!;
