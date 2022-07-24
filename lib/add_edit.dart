@@ -4,6 +4,7 @@ import 'package:mixer/drink.dart';
 import 'package:mixer/constants.dart';
 import 'package:mixer/common.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:mixer/models/exceptions.dart';
 
 const String Public = "public";
 const String Private = "private";
@@ -250,27 +251,41 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             );
             setState(() {
                 if (widget.drink == null) {
-                    future = api.createDrink(d);
+                    future = api.createDrink(d)
+                        .then((val) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
+                        }).catchError((e) {
+                                showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                        return drinkAlreadyExistsDialog(
+                                            context,
+                                            d,
+                                            (d, params) { 
+                                                return api.createDrink(d as DrinkRequest, params);
+                                            }
+                                        );
+                                    },
+                                );
+                            }, 
+                            test:(e) {
+                                return e is DrinkAlreadyExistsException;
+                            },
+                        ).catchError((e) {
+                            showErrorSnackbar(context, e.toString());
+                            Navigator.pop(context);
+                        });
                 } else {
-                    future = api.updateDrink(widget.drink!.id, d);
+                    future = api.updateDrink(widget.drink!.id, d)                        
+                    .then((val) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
+                    }).catchError((e) {
+                            showErrorSnackbar(context, e.toString());
+                            Navigator.pop(context);
+                    });
                 }
-                future!.then((val) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
-                }).catchError((e) {
-                    showErrorSnackbar(context, e.toString());
-                    Navigator.pop(context);
-                });
             });
         }
-    }
-
-    void showErrorSnackbar(BuildContext context, String message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(message),
-            ),
-        );
     }
 }
 
