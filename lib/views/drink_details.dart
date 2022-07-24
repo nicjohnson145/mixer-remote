@@ -107,8 +107,20 @@ class _DrinkDetailsState extends State<DrinkDetails> {
         if (widget.drink.notes != null) {
             components.add(basicValue("Notes", widget.drink.notes!));
         }
+
+        if (widget.drink.underDevelopment) {
+            components.add(Row(
+                children: const [
+                    Icon(Icons.check_box_rounded, size: 15),
+                    SizedBox(width: 5),
+                    Text("Under development"),
+                ],
+            ));
+        }
+
         components.add(basicValue("Ingredients", ""));
         components.addAll(getIngredientsList());
+
 
         return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),

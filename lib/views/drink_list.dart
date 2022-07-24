@@ -80,6 +80,24 @@ class _DrinkLineItem {
         required this.onTap,
     });
 
+    Widget nameRow(BuildContext context) {
+        List<Widget> children = [
+            Text(
+                drink.name,
+                style: Theme.of(context).textTheme.subtitle1,
+            ),
+        ];
+        if (drink.underDevelopment) {
+            // children.add(Spacer());
+            children.add(const SizedBox(width: 15));
+            children.add(const Icon(
+                Icons.science_rounded,
+                size: 16,
+            ));
+        }
+        return Row(children: children);
+    }
+
     Widget build(BuildContext context) {
         return Card(
             child: InkWell(
@@ -94,10 +112,7 @@ class _DrinkLineItem {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                            Text(
-                                drink.name,
-                                style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            nameRow(context),
                             Text(
                                 drink.primaryAlcohol,
                                 style: Theme.of(context).textTheme.subtitle2,

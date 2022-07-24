@@ -32,6 +32,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
     TextEditingController notesController = TextEditingController();
     List<String> ingredients = [];
     String? publicity;
+    bool underDevelopment = false;
 
     List<FocusNode> ingredientsFocusNodes = [];
     FocusNode newIngredientFocus = FocusNode();
@@ -57,6 +58,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             }
             id = widget.drink!.id;
             publicity = widget.drink!.publicity;
+            underDevelopment = widget.drink!.underDevelopment;
         }
     }
 
@@ -136,6 +138,22 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         return list;
     }
 
+    Widget buildDevelopmentCheckbox() {
+        return Row(
+            children: [
+                Checkbox(
+                    value: underDevelopment,
+                    onChanged: (bool? value) {
+                        setState(() {
+                            underDevelopment = value!;
+                        });
+                    },
+                ),
+                const Text("Under Development"),
+            ],
+        );
+    }
+
     Widget getPublicityDropdown() {
         return Row(
             children: <Widget>[
@@ -196,6 +214,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         ];
         components.addAll(getIngredientsList());
         components.add(getPublicityDropdown());
+        components.add(buildDevelopmentCheckbox());
         return Scrollbar(
             child: ListView.builder(
                 itemCount: components.length,
@@ -247,6 +266,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 notes: notesController.text.isNotEmpty ? notesController.text : null,
                 ingredients: ingredients,
                 publicity: publicity ?? Public,
+                underDevelopment: underDevelopment,
             );
             setState(() {
                 if (widget.drink == null) {
