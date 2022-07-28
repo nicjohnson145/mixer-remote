@@ -2,14 +2,13 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:mixer/drink.dart';
 import 'package:mixer/auth.dart';
+import 'package:mixer/models/exceptions.dart';
 import 'package:mixer/views/hamburger.dart';
 import 'package:provider/provider.dart';
 import 'package:mixer/api_service.dart';
 import 'package:mixer/add_edit.dart';
 import 'package:mixer/common.dart';
 import 'package:mixer/constants.dart';
-
-import '../models/exceptions.dart';
 
 class DrinkDetails extends StatefulWidget {
     Drink drink;
