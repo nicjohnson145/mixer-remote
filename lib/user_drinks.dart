@@ -9,9 +9,9 @@ import 'package:mixer/views/drink_list.dart';
 import 'package:provider/provider.dart';
 
 class UserDrinks extends StatefulWidget {
-    String? username;
+    final String? username;
 
-    UserDrinks({
+    const UserDrinks({
         Key? key,
         this.username,
     }) : super(key: key);
@@ -53,7 +53,7 @@ class  _UserDrinksState extends State<UserDrinks> {
                         }
                         final dl = snapshot.data as List<Drink>;
                         return DrinkListView(
-                            drinks: dl,
+                            allDrinks: dl,
                             onDrinkTap: (drink) {
                                 Navigator.of(context).pushNamed(
                                     Routes.DrinkDetails,
@@ -61,7 +61,7 @@ class  _UserDrinksState extends State<UserDrinks> {
                                 );
                             },
                             username: widget.username,
-                        ).build(context);
+                        );
                     default:
                         if (snapshot.hasError) {
                             return errorScreen("Error: ${snapshot.error}", context);
