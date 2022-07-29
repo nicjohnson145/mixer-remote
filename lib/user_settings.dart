@@ -5,7 +5,6 @@ import 'package:mixer/views/hamburger.dart';
 import 'package:mixer/constants.dart';
 import 'package:mixer/models/settings.dart';
 import 'package:tuple/tuple.dart';
-import 'package:mixer/common.dart';
 
 class UserSettings extends StatefulWidget {
     const UserSettings({
@@ -129,14 +128,5 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 showErrorSnackbar(context, e);
             });
         });
-    }
-
-    void showErrorSnackbar(BuildContext context, String message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(message),
-            ),
-        );
     }
 }

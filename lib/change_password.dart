@@ -97,13 +97,4 @@ class _ChangePasswordState extends State<ChangePassword> {
             });
         });
     }
-
-    void showErrorSnackbar(BuildContext context, String message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(message),
-            ),
-        );
-    }
 }

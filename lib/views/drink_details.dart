@@ -1,6 +1,8 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:mixer/drink.dart';
 import 'package:mixer/auth.dart';
+import 'package:mixer/models/exceptions.dart';
 import 'package:mixer/views/hamburger.dart';
 import 'package:provider/provider.dart';
 import 'package:mixer/api_service.dart';
@@ -74,6 +76,23 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                         copyFuture!.then((_) {
                             Navigator.of(context).pushNamedAndRemoveUntil(Routes.Dashboard, (route) => false);
                         }).catchError((e) {
+                                showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                        return drinkAlreadyExistsDialog(
+                                            context,
+                                            widget.drink.id,
+                                            (id, params) { 
+                                                return api.copyDrink(id as Int64, params);
+                                            }
+                                        );
+                                    },
+                                );
+                            }, 
+                            test:(e) {
+                                return e is DrinkAlreadyExistsException;
+                            },
+                        ).catchError((e) {
                             showErrorSnackbar(context, e.toString());
                         });
                     });
@@ -197,15 +216,6 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                     ),
                 ],
                 elevation: 24.0,
-            ),
-        );
-    }
-
-    void showErrorSnackbar(BuildContext context, String message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(message),
             ),
         );
     }
