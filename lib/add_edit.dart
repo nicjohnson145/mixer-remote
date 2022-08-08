@@ -34,6 +34,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
     List<String> ingredients = [];
     String? publicity;
     bool underDevelopment = false;
+    bool isFavorite = false;
 
     List<FocusNode> ingredientsFocusNodes = [];
     FocusNode newIngredientFocus = FocusNode();
@@ -60,6 +61,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             id = widget.drink!.id;
             publicity = widget.drink!.publicity;
             underDevelopment = widget.drink!.underDevelopment;
+            isFavorite = widget.drink!.isFavorite;
         }
     }
 
@@ -155,6 +157,22 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         );
     }
 
+    Widget buildFavoriteCheckbox() {
+        return Row(
+            children: [
+                Checkbox(
+                    value: isFavorite,
+                    onChanged: (bool? value) {
+                        setState(() {
+                            isFavorite = value!;
+                        });
+                    },
+                ),
+                const Text("Favorite"),
+            ],
+        );
+    }
+
     Widget getPublicityDropdown() {
         return Row(
             children: <Widget>[
@@ -216,6 +234,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         components.addAll(getIngredientsList());
         components.add(getPublicityDropdown());
         components.add(buildDevelopmentCheckbox());
+        components.add(buildFavoriteCheckbox());
         return Scrollbar(
             child: ListView.builder(
                 itemCount: components.length,
@@ -268,6 +287,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 ingredients: ingredients,
                 publicity: publicity ?? Public,
                 underDevelopment: underDevelopment,
+                isFavorite: isFavorite,
             );
             setState(() {
                 if (widget.drink == null) {

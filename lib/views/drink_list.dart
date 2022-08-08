@@ -95,6 +95,13 @@ class _DrinkLineItem {
                 size: 16,
             ));
         }
+        if (drink.isFavorite) {
+            children.add(const SizedBox(width: 15));
+            children.add(const Icon(
+                Icons.star,
+                size: 16,
+            ));
+        }
         return Row(children: children);
     }
 

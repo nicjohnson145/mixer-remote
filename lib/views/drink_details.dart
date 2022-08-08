@@ -137,6 +137,16 @@ class _DrinkDetailsState extends State<DrinkDetails> {
             ));
         }
 
+        if (widget.drink.isFavorite) {
+            components.add(Row(
+                children: const [
+                    Icon(Icons.check_box_rounded, size: 15),
+                    SizedBox(width: 5),
+                    Text("Favorite"),
+                ],
+            ));
+        }
+
         components.add(basicValue("Ingredients", ""));
         components.addAll(getIngredientsList());
 
