@@ -141,34 +141,18 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         return list;
     }
 
-    Widget buildDevelopmentCheckbox() {
+    Widget booleanCheckbox(Function(bool) setFunc, bool Function() getFunc, String text) {
         return Row(
             children: [
                 Checkbox(
-                    value: underDevelopment,
+                    value: getFunc(),
                     onChanged: (bool? value) {
                         setState(() {
-                            underDevelopment = value!;
+                            setFunc(value!);
                         });
                     },
                 ),
-                const Text("Under Development"),
-            ],
-        );
-    }
-
-    Widget buildFavoriteCheckbox() {
-        return Row(
-            children: [
-                Checkbox(
-                    value: isFavorite,
-                    onChanged: (bool? value) {
-                        setState(() {
-                            isFavorite = value!;
-                        });
-                    },
-                ),
-                const Text("Favorite"),
+                Text(text),
             ],
         );
     }
@@ -233,8 +217,8 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         ];
         components.addAll(getIngredientsList());
         components.add(getPublicityDropdown());
-        components.add(buildDevelopmentCheckbox());
-        components.add(buildFavoriteCheckbox());
+        components.add(booleanCheckbox((v) { underDevelopment = v; }, () { return underDevelopment; }, "Under Development"));
+        components.add(booleanCheckbox((v) { isFavorite = v; }, () { return isFavorite; }, "Favorite"));
         return Scrollbar(
             child: ListView.builder(
                 itemCount: components.length,
