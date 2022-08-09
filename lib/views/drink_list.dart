@@ -88,21 +88,21 @@ class _DrinkLineItem {
             ),
         ];
         if (drink.underDevelopment) {
-            // children.add(Spacer());
-            children.add(const SizedBox(width: 15));
-            children.add(const Icon(
-                Icons.science_rounded,
-                size: 16,
-            ));
+            children.add(cardIcon(Icons.science_rounded));
         }
         if (drink.isFavorite) {
-            children.add(const SizedBox(width: 15));
-            children.add(const Icon(
-                Icons.star,
-                size: 16,
-            ));
+            children.add(cardIcon(Icons.star));
         }
         return Row(children: children);
+    }
+
+    Widget cardIcon(IconData i) {
+        return Row(
+            children:[
+                const SizedBox(width: 15),
+                Icon(i, size: 16),
+            ],
+        );
     }
 
     Widget build(BuildContext context) {
