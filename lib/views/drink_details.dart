@@ -128,13 +128,11 @@ class _DrinkDetailsState extends State<DrinkDetails> {
         }
 
         if (widget.drink.underDevelopment) {
-            components.add(Row(
-                children: const [
-                    Icon(Icons.check_box_rounded, size: 15),
-                    SizedBox(width: 5),
-                    Text("Under development"),
-                ],
-            ));
+            components.add(boolCheckbox("Under Development"));
+        }
+
+        if (widget.drink.isFavorite) {
+            components.add(boolCheckbox("Favorite"));
         }
 
         components.add(basicValue("Ingredients", ""));
@@ -151,6 +149,16 @@ class _DrinkDetailsState extends State<DrinkDetails> {
                     },
                 ),
             ),
+        );
+    }
+
+    Widget boolCheckbox(String text) {
+        return Row(
+            children: [
+                const Icon(Icons.check_box_rounded, size: 15),
+                const SizedBox(width: 5),
+                Text(text),
+            ],
         );
     }
 

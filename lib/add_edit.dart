@@ -34,6 +34,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
     List<String> ingredients = [];
     String? publicity;
     bool underDevelopment = false;
+    bool isFavorite = false;
 
     List<FocusNode> ingredientsFocusNodes = [];
     FocusNode newIngredientFocus = FocusNode();
@@ -60,6 +61,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             id = widget.drink!.id;
             publicity = widget.drink!.publicity;
             underDevelopment = widget.drink!.underDevelopment;
+            isFavorite = widget.drink!.isFavorite;
         }
     }
 
@@ -139,18 +141,18 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         return list;
     }
 
-    Widget buildDevelopmentCheckbox() {
+    Widget booleanCheckbox(Function(bool) setFunc, bool Function() getFunc, String text) {
         return Row(
             children: [
                 Checkbox(
-                    value: underDevelopment,
+                    value: getFunc(),
                     onChanged: (bool? value) {
                         setState(() {
-                            underDevelopment = value!;
+                            setFunc(value!);
                         });
                     },
                 ),
-                const Text("Under Development"),
+                Text(text),
             ],
         );
     }
@@ -215,7 +217,8 @@ class _AddEditDrinkState extends State<AddEditDrink> {
         ];
         components.addAll(getIngredientsList());
         components.add(getPublicityDropdown());
-        components.add(buildDevelopmentCheckbox());
+        components.add(booleanCheckbox((v) { underDevelopment = v; }, () { return underDevelopment; }, "Under Development"));
+        components.add(booleanCheckbox((v) { isFavorite = v; }, () { return isFavorite; }, "Favorite"));
         return Scrollbar(
             child: ListView.builder(
                 itemCount: components.length,
@@ -268,6 +271,7 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 ingredients: ingredients,
                 publicity: publicity ?? Public,
                 underDevelopment: underDevelopment,
+                isFavorite: isFavorite,
             );
             setState(() {
                 if (widget.drink == null) {
