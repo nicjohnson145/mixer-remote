@@ -115,11 +115,9 @@ class _AddEditDrinkState extends State<AddEditDrink> {
                 title: TextField(
                     focusNode: ingredientsFocusNodes[i],
                     controller: ingredientsControllers[i],
-                    onSubmitted: (text)
+                    onChanged: (text)
                     {
                         ingredients[i] = text;
-                        FocusScope.of(context).requestFocus(newIngredientFocus);
-                        setState(() {});
                     }
                 ),
                 trailing: 
