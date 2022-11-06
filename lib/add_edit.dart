@@ -53,6 +53,9 @@ class _AddEditDrinkState extends State<AddEditDrink> {
             if (widget.drink!.instructions != null) {
                 instructionsController.text = widget.drink!.instructions!;
             }
+            if (widget.drink!.notes != null) {
+                notesController.text = widget.drink!.notes!;
+            }
             ingredients.addAll(widget.drink!.ingredients);
             for (var i = 0; i < ingredients.length; i++) {
                 ingredientsControllers.add(TextEditingController(text: ingredients[i]));
