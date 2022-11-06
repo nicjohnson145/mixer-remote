@@ -2,30 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:mixer/drink.dart';
 import 'package:mixer/views/hamburger.dart';
 import 'package:mixer/constants.dart';
+import 'package:mixer/views/search_filter.dart';
 
-class DrinkListView {
-    List<Drink> drinks;
-    void Function(Drink) onDrinkTap;
-    String? username;
+class DrinkListView extends StatefulWidget{
+    final List<Drink> allDrinks;
+    final List<Drink> visibleDrinks;
+    final void Function(Drink) onDrinkTap;
+    final String? username;
 
-    DrinkListView({
-        required this.drinks,
+    /// Creates a stateful [DrinkListView]. Note that [visibleDrinks] should
+    /// be a new list or a DEEP copy of [allDrinks] - passing by reference will
+    /// make filters not work.
+    DrinkListView({Key? key, 
+        required this.allDrinks,
         required this.onDrinkTap,
         this.username,
-    });
+    }): visibleDrinks = allDrinks.toList(), super(key: key);
+    
+    @override
+    State<DrinkListView> createState() => _DrinkListViewState();
+}
+    
+class _DrinkListViewState extends State <DrinkListView> {
 
+    @override
     Widget build(BuildContext context) {
         String title;
-        if (username == null) {
+        if (widget.username == null) {
             title = "Drinks";
         } else {
-            title = "${username!}'s Drinks";
+            title = "${widget.username!}'s Drinks";
         }
         return Scaffold(
             appBar: AppBar(
                 title: Text(title),
-                actions: const <Widget>[
-                    Hamburger(),
+                actions: <Widget>[
+                    SearchFilter((filterFunction) {
+                        refresh(filterFunction(widget.allDrinks));
+                    }),
+                    const Hamburger(),
                 ],
             ),
             body: getBody(context),
@@ -35,31 +50,31 @@ class DrinkListView {
 
     Widget getBody(BuildContext context) {
         // If you're looking at someone else's drinks
-        if (drinks.isEmpty && username != null) {
+        if (widget.allDrinks.isEmpty && widget.username != null) {
             return Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 15.0,
                     horizontal: 15.0,
                 ),
-                child: Text("Either $username has no public drinks, or does not exist"),
+                child: Text("Either $widget.username has no public drinks, or does not exist"),
             );
         }
 
-        var sortedDrinks = List<Drink>.from(drinks);
+        var sortedDrinks = List<Drink>.from(widget.visibleDrinks);
         sortedDrinks.sort((a, b) => a.name.compareTo(b.name));
         return ListView.builder(
             itemCount: sortedDrinks.length,
             itemBuilder: (BuildContext context, int i) {
                 return _DrinkLineItem(
                     drink: sortedDrinks[i],
-                    onTap: onDrinkTap,
+                    onTap: widget.onDrinkTap,
                 ).build(context);
             },
         );
     }
 
     Widget getFloatingActionButton(BuildContext context) {
-        if (username != null) {
+        if (widget.username != null) {
             return Container();
         }
         return FloatingActionButton(
@@ -68,6 +83,17 @@ class DrinkListView {
             },
             child: const Icon(Icons.add),
         );
+    }
+
+    void refresh(Future<List<Drink>?> visibleDrinks) {
+        visibleDrinks.then((value) {
+            if (value != null) {
+                setState(() {
+                    widget.visibleDrinks.clear();
+                    widget.visibleDrinks.addAll(value);
+                });
+            }
+        });
     }
 }
 
