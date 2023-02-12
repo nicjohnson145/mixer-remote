@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
                 ChangeNotifierProvider(create: (_) => UserProvider()),
             ],
             child: MaterialApp(
+                debugShowCheckedModeBanner: false,
                 title: "Mixer",
                 theme: ThemeData(brightness: Brightness.dark),
                 home: FutureBuilder(
