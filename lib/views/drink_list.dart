@@ -2,30 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:mixer/drink.dart';
 import 'package:mixer/views/hamburger.dart';
 import 'package:mixer/constants.dart';
+import 'package:mixer/views/search_filter.dart';
 
-class DrinkListView {
-    List<Drink> drinks;
-    void Function(Drink) onDrinkTap;
-    String? username;
+class DrinkListView extends StatefulWidget {
+    final List<Drink> drinks;
+    final void Function(Drink) onDrinkTap;
+    final String? username;
+    final SearchFilter searchFilterWidget;
+    final Map<SearchFilterOption, bool Function(Drink)> filterFunctions = {};
 
-    DrinkListView({
+    DrinkListView({Key? key, 
         required this.drinks,
         required this.onDrinkTap,
         this.username,
-    });
+    }): searchFilterWidget = SearchFilter(allDrinks: drinks), super(key: key);
 
+    @override
+    State<DrinkListView> createState() => _DrinkListViewState();
+}
+
+class _DrinkListViewState extends State<DrinkListView> {
+
+    @override
     Widget build(BuildContext context) {
+        widget.searchFilterWidget.updateFilterFunc = (searchFilterOption, newFilter) => {
+            setState(() {
+                if (searchFilterOption == SearchFilterOption.clear) {
+                    widget.filterFunctions.clear();
+                } else {
+                    widget.filterFunctions[searchFilterOption] = newFilter;
+                }
+            })
+        };
         String title;
-        if (username == null) {
+        if (widget.username == null) {
             title = "Drinks";
         } else {
-            title = "${username!}'s Drinks";
+            title = "${widget.username!}'s Drinks";
         }
         return Scaffold(
             appBar: AppBar(
                 title: Text(title),
-                actions: const <Widget>[
-                    Hamburger(),
+                actions: <Widget>[
+                    widget.searchFilterWidget,
+                    const Hamburger(),
                 ],
             ),
             body: getBody(context),
@@ -35,31 +55,36 @@ class DrinkListView {
 
     Widget getBody(BuildContext context) {
         // If you're looking at someone else's drinks
-        if (drinks.isEmpty && username != null) {
+        if (widget.drinks.isEmpty && widget.username != null) {
             return Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 15.0,
                     horizontal: 15.0,
                 ),
-                child: Text("Either $username has no public drinks, or does not exist"),
+                child: Text("Either ${widget.username} has no public drinks, or does not exist"),
             );
         }
 
-        var sortedDrinks = List<Drink>.from(drinks);
-        sortedDrinks.sort((a, b) => a.name.compareTo(b.name));
+        var sortedAndFilteredDrinks = List<Drink>.from(widget.drinks);
+        sortedAndFilteredDrinks.sort((a, b) => a.name.compareTo(b.name));
+        if (widget.filterFunctions.isNotEmpty) {
+            sortedAndFilteredDrinks.retainWhere(widget.filterFunctions.values.reduce((value, element) => (drink) {
+                return value(drink) && element(drink);
+            }));
+        }
         return ListView.builder(
-            itemCount: sortedDrinks.length,
+            itemCount: sortedAndFilteredDrinks.length,
             itemBuilder: (BuildContext context, int i) {
                 return _DrinkLineItem(
-                    drink: sortedDrinks[i],
-                    onTap: onDrinkTap,
+                    drink: sortedAndFilteredDrinks[i],
+                    onTap: widget.onDrinkTap,
                 ).build(context);
             },
         );
     }
 
     Widget getFloatingActionButton(BuildContext context) {
-        if (username != null) {
+        if (widget.username != null) {
             return Container();
         }
         return FloatingActionButton(

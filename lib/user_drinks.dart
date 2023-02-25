@@ -61,7 +61,7 @@ class  _UserDrinksState extends State<UserDrinks> {
                                 );
                             },
                             username: widget.username,
-                        ).build(context);
+                        );
                     default:
                         if (snapshot.hasError) {
                             return errorScreen("Error: ${snapshot.error}", context);
